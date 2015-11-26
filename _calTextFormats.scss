@@ -1,0 +1,78 @@
+
+$headfont:4vw "Helvetica Neue", Helvetica, Arial;
+$requestfont:1vw Helvetica,Arial;
+
+.error-text{
+  font-size: 0.8vw;
+  left: -8vw;
+  top:-1vw;
+  color:red;
+  font-style: bold;
+
+}
+
+#textbox4{
+  display:inline-block;
+  width:25vw;
+  background-color: white;
+  margin-left: 2vw;
+  border-color: black;
+  border-style: solid;
+  border-width: 2px;
+  text-align: left;
+  margin-left: 1vw;
+  font-size: 1vw;
+  padding: 2vw;
+}
+.pcode{
+  margin:0;
+  font-family: $requestfont;
+  position:relative;
+  left:1vw;
+}
+.pcode2{
+  position:relative;
+  font-family: $requestfont;
+  left:1vw;
+}
+.oldtext{
+  margin-left: 2vw;
+  margin-bottom: 0;
+  font-size: 1.5vw;
+  font-style: italic;
+}
+#mapheader{
+  font: 2vw "Helvetica Neue", Helvetica, Arial; 
+  text-align: center;
+}
+.headtext2{
+  font: 2vw "Helvetica Neue", Helvetica, Arial; 
+  text-align: center;
+}
+.headtext {
+  font: 2vw "Helvetica Neue", Helvetica, Arial; 
+  text-align: center;
+}
+.todaysdate{
+  border-color: red;
+  border-style: solid;
+  text-align: center;
+  font-size: 2vw;
+}
+.textbox{
+  width:30vw;
+  height:10vw;
+  position: relative;
+  display:inherit;
+  left:3vw;
+  font-size: 1vw;
+  font-family: Arial;
+  margin-bottom: 1vw;
+}
+#formpage{
+  font-size: 1.5vw;
+}
+.calMonth{
+  font: 3vw "Helvetica Neue", Helvetica, Arial; 
+  text-align: center;
+}

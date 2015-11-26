@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>KK Calendar</title>
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="stylesheet.css">
+
+  <script src="http://code.jquery.com/jquery-2.1.4.min.js"> </script>
+  <!--jQuery UI and style sheets next 4 lines.  -->
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="../../jquery-ui-1.11.4/jquery-ui.css">
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="../../jquery-ui-1.11.4/jquery-ui.js"></script>
+   
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZgE4487vDwz7ZksO5AAOMqFuuENHT_CY&signed_in=true"
+    //     async defer>
+</script> -->
+
+</head>
+<body>
+
+ <script src="http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true">
+   </script>
+  <script>
+  function createInitialPageView(){
+    //put in here everything that creates the DOM.
+    $divtop= $('<div></div>').addClass("month-header");
+    $headx =$('<p></p>').addClass("calMonth").text("November 2015"); 
+    $mapviewbutton=$('<button id="mapviewbutton" type="button">View Tasks by Map</button>');
+    $divtop.append($mapviewbutton);
+    $divtop.append($headx);
+    $('body').append($divtop);
+  };
+
+ // var Model = function modelInit(){
+//put in here all the stuff that sets up the model, where model is the data store.
+// Model is data structure. test: if you don't impact on view/DOM its model.
+    var days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]; 
+    var month= "November"; 
+    var dateselected="";    //could move this
+    var dates30= ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30'];
+    var taskEntries={};
+    var year='2015';
+
+    for (var x=0;x<31;x++){
+      taskEntries[x]="";}
+
+    var locationsArray=new Array(30);  
+     for (var i = 0; i < 30; i++) {
+          locationsArray[i] = new Array(2);
+          locationsArray[i]=[];
+        }
+    var bounds = new google.maps.LatLngBounds();  //could move this
+
+
+  function getDatesinMonth(month,year){
+    //replace for loop with real code
+    var datesInMonth=30;
+    var dateArray=[];
+    for (var counter;counter<30;counter++){
+    dateArray.push=(counter+1);
+    }
+    return dateArray;
+  };
+
+  function createGridOfDatesView(){
+    var table1=document.createElement("table");  
+     table1.setAttribute("id","grid");
+    var row1  = table1.insertRow(0);
+    row1.setAttribute("class","rowformat");
+    var row2  = table1.insertRow(1);
+    row1.setAttribute("class","rowformat");
+    var row3  = table1.insertRow(2);
+    row1.setAttribute("class","rowformat");
+    var row4  = table1.insertRow(3);
+    row1.setAttribute("class","rowformat");
+    var row5  = table1.insertRow(4);
+    row1.setAttribute("class","rowformat");
+    var row6  = table1.insertRow(5);
+    row1.setAttribute("class","rowformat");
+    var row7 = table1.insertRow(6);
+    row1.setAttribute("class","rowformat");
+    var row8 = table1.insertRow(7);
+    row1.setAttribute("class","rowformat");
+    
+    document.body.appendChild(table1);
+    var cell1 = row1.insertCell(0);
+    cell1.setAttribute("class","colformat");
+    var cell2 = row1.insertCell(1);
+    cell2.setAttribute("class","colformat");
+    var cell3 = row1.insertCell(2);
+    cell3.setAttribute("class","colformat");
+    var cell4 = row1.insertCell(3);
+    cell4.setAttribute("class","colformat");
+    var cell5 = row1.insertCell(4);
+    cell5.setAttribute("class","colformat");
+    var cell6 = row1.insertCell(5);
+    cell6.setAttribute("class","colformat");
+    var cell7 = row1.insertCell(6);
+    cell7.setAttribute("class","colformat");
+   
+//month cells
+    var cell8 = row2.insertCell(0);
+    cell8.setAttribute("class","inactive");
+    var cell9 = row2.insertCell(1);
+    cell9.setAttribute("class","inactive");
+    var cell10 = row2.insertCell(2);
+    cell10.setAttribute("class","inactive");
+    var cell11 = row2.insertCell(3);
+    cell11.setAttribute("class","inactive");
+    var cell12 = row2.insertCell(4);
+    cell12.setAttribute("class","inactive");
+    var cell13 = row2.insertCell(5);
+    cell13.setAttribute("class","inactive");
+    var cell14 = row2.insertCell(6);
+    cell14.setAttribute("class","cellformat");
+    cell14.setAttribute("ID","1");
+    var cell15 = row3.insertCell(0);
+    cell15.setAttribute("class","cellformat");
+    cell15.setAttribute("ID","2");
+    var cell16 = row3.insertCell(1);
+    cell16.setAttribute("class","cellformat");
+    cell16.setAttribute("ID","3");
+    var cell17 = row3.insertCell(2);
+    cell17.setAttribute("class","cellformat");
+    cell17.setAttribute("ID","4");
+    var cell18 = row3.insertCell(3);
+    cell18.setAttribute("class","cellformat");
+    cell18.setAttribute("ID","5");
+    var cell19 = row3.insertCell(4);
+    cell19.setAttribute("class","cellformat");
+    cell19.setAttribute("ID","6");
+    var cell20 = row3.insertCell(5);
+    cell20.setAttribute("class","cellformat");
+    cell20.setAttribute("ID","7");
+    var cell21 = row3.insertCell(6);
+    cell21.setAttribute("class","cellformat");
+    cell21.setAttribute("ID","8");
+    var cell22 = row4.insertCell(0);
+    cell22.setAttribute("class","cellformat");
+    cell22.setAttribute("ID","9");
+    var cell23 = row4.insertCell(1);
+    cell23.setAttribute("class","cellformat");
+    cell23.setAttribute("ID","10");
+    var cell24 = row4.insertCell(2);
+    cell24.setAttribute("class","cellformat");
+    cell24.setAttribute("ID","11");
+    var cell25 = row4.insertCell(3);
+    cell25.setAttribute("class","cellformat");
+    cell25.setAttribute("ID","12");
+    var cell26 = row4.insertCell(4);
+    cell26.setAttribute("class","cellformat");
+    cell26.setAttribute("ID","13");
+    var cell27 = row4.insertCell(5);
+    cell27.setAttribute("class","cellformat");
+    cell27.setAttribute("ID","14");
+    var cell28 = row4.insertCell(6);
+    cell28.setAttribute("class","cellformat");
+    cell28.setAttribute("ID","15");
+    var cell29 = row5.insertCell(0);
+    cell29.setAttribute("class","cellformat");
+    cell29.setAttribute("ID","16");
+    var cell30 = row5.insertCell(1);
+    cell30.setAttribute("class","cellformat");
+    cell30.setAttribute("ID","17");
+    var cell31 = row5.insertCell(2);
+    cell31.setAttribute("class","cellformat");
+    cell31.setAttribute("ID","18");
+    var cell32 = row5.insertCell(3);
+    cell32.setAttribute("class","cellformat");
+    cell32.setAttribute("ID","19");
+    var cell33 = row5.insertCell(4);
+    cell33.setAttribute("class","cellformat");
+    cell33.setAttribute("ID","20");
+    var cell34 = row5.insertCell(5);
+    cell34.setAttribute("class","cellformat");
+    cell34.setAttribute("ID","21");
+    var cell35 = row5.insertCell(6);
+    cell35.setAttribute("class","cellformat");
+    cell35.setAttribute("ID","22");
+    var cell36 = row6.insertCell(0);
+    cell36.setAttribute("class","cellformat");
+    cell36.setAttribute("ID","23");
+    var cell37 = row6.insertCell(1);
+    cell37.setAttribute("class","cellformat");
+    cell37.setAttribute("ID","24");
+    var cell38 = row6.insertCell(2);
+    cell38.setAttribute("class","cellformat");
+    cell38.setAttribute("ID","25");
+    var cell39 = row6.insertCell(3);
+    cell39.setAttribute("class","cellformat");
+    cell39.setAttribute("ID","26");
+    var cell40 = row6.insertCell(4);
+    cell40.setAttribute("class","cellformat");
+    cell40.setAttribute("ID","27");
+    var cell41 = row6.insertCell(5);
+    cell41.setAttribute("class","cellformat");
+    cell41.setAttribute("ID","28");
+    var cell42 = row6.insertCell(6);
+    cell42.setAttribute("class","cellformat");
+    cell42.setAttribute("ID","29");
+    var cell43 = row7.insertCell(0);
+    cell43.setAttribute("class","cellformat");
+    cell43.setAttribute("ID","30");
+    var cell44 = row7.insertCell(1);
+    cell44.setAttribute("class","inactive");
+    cell44.setAttribute("ID","31");
+    var cell45 = row7.insertCell(2);
+    cell45.setAttribute("class","inactive");
+    cell45.setAttribute("ID","32");
+    var cell46 = row7.insertCell(3);
+    cell46.setAttribute("class","inactive");
+    var cell47 = row7.insertCell(4);
+    cell47.setAttribute("class","inactive");
+    var cell48 = row7.insertCell(5);
+    cell48.setAttribute("class","inactive");
+    var cell49 = row7.insertCell(6);
+    cell49.setAttribute("class","inactive");
+    
+    cell1.innerHTML = days[0];
+    cell2.innerHTML = days[1];  
+    cell3.innerHTML = days[2];  
+    cell4.innerHTML = days[3]; 
+    cell5.innerHTML = days[4]; 
+    cell6.innerHTML = days[5]; 
+    cell7.innerHTML = days[6]; 
+
+    cell14.innerHTML = "1";
+    cell15.innerHTML = "2";
+    cell16.innerHTML = "3";  
+    cell17.innerHTML = "4";  
+    cell18.innerHTML = "5";
+    cell19.innerHTML = "6";
+    cell20.innerHTML = "7";
+    cell21.innerHTML = "8";
+    cell22.innerHTML = "9";
+    cell23.innerHTML = "10";  
+    cell24.innerHTML = "11";  
+    cell25.innerHTML = "12";
+    cell26.innerHTML = "13";
+    cell27.innerHTML = "14";
+    cell28.innerHTML = "15";
+    cell29.innerHTML = "16";
+    cell30.innerHTML = "17";  
+    cell31.innerHTML = "18";  
+    cell32.innerHTML = "19";
+    cell33.innerHTML = "20";
+    cell34.innerHTML = "21";
+    cell35.innerHTML = "22";
+    cell36.innerHTML = "23";
+    cell37.innerHTML = "24";  
+    cell38.innerHTML = "25";  
+    cell39.innerHTML = "26";
+    cell40.innerHTML = "27";
+    cell41.innerHTML = "28";
+    cell42.innerHTML = "29";
+    cell43.innerHTML = "30";
+  };
+
+  function createTaskEntryForm(){
+    $formdiv=$('<div id="entire-div"></div>').addClass("hidden");  // 
+    $taskform = $('<form id="taskform"></form>'); 
+    $formheader=$("<p></p>").addClass("headtext");  //
+    $taskform.append($formheader);
+    $textlabel=$('<p class="pcode2">Enter details of your task:</p>');
+    $taskform.append($textlabel);
+    $textfield=$('<textarea></textarea>');
+    $textfield.attr("id","taskWords").addClass("textbox").attr("name","textfieldname");
+    $taskform.append($textfield);
+    $mapdiv1=$('<div id="map"></div>').addClass("mapstyle");
+    $taskform.append($mapdiv1);
+ 
+    $findbutton=$('<button id="findbutton" type="button">FIND</button>');
+    $pcodelabel=$('<p class="pcode">Enter Postcode for task (if there is one):</p>');
+    $postcodebox=('<input type="text" id="postcode"></input>');
+    $taskform.append($pcodelabel).append($postcodebox).append($findbutton);
+    $submitfield=$('<button id="submitbutton">SAVE</button>'); 
+    $submitfield.attr("type","button");
+    $cancelfield=$('<button>CANCEL</button>'); 
+    $cancelfield.attr("type","button").attr("id","cancelbutton");
+    $space=$('<br></br>');
+    $taskform.append($submitfield).append($cancelfield);;
+    $formdiv.append($taskform);
+    $('body').append($formdiv);
+  };
+
+function createTaskEditForm(){
+    $secondformdiv=$('<div id="secondDiv"></div>').addClass("hidden");
+    $secondtaskform=$('<form id="secondformpage"></form>');
+    $secondformheader=$('<p id="headtext"></p>').addClass("headtext");
+    $secondtextfield=$('<p id="oldtextId"></p>').addClass("oldtext");
+    $closefield=$('<button id="closebutton">CLOSE</button>');   
+    $editfield=$('<button>EDIT</button>').attr("ID","editbutton");      
+    $removefield=$('<button>REMOVE</button>').attr("id","removebutton");  
+    $linebr=$('<br></br>');  
+
+    $secondtaskform.append($secondformheader).append($linebr).append($linebr).append($secondtextfield).append($linebr).append($closefield).append($editfield).append($removefield);  
+    $secondformdiv.append($secondtaskform); 
+    $('body').append($secondformdiv); 
+
+};
+
+function createMapView(){  //I think this is a mixture of DOM and view stuff.
+   $formdiv2=$('<div id="formdiv2"></div>').addClass("hidden");  // 
+    $mapform2 = $('<form id="mapform2"></form>'); 
+    $formheader2=$('<p id="mapheader">November Tasks by Map</p>'); 
+
+    $gobackfield=$('<button id="gobackbutton">Go back to calendar view</button>'); 
+    $gobackfield.attr("type","button");
+    $formheader2.append($gobackfield);
+    $formdiv2.append($formheader2);
+
+    $sliderContainer=$('<div id="slider-range"></div>');
+    
+    $sliderText3=$('<p></p>');
+    $sliderSlideInput=$('<input id="slidevalue" type="text"></input>').addClass("sliderstyle");
+    $sliderSlideLabel=$('<label for="amount">Show tasks between:</label>');
+    $sliderSlideInput.readonly=true;
+    $sliderText3.append($sliderSlideLabel);
+    $sliderText3.append($sliderSlideInput);
+    
+    $sliderContainer.append($sliderText3);
+    $mapform2.append($linebr);
+    $mapform2.append($sliderContainer);
+
+    $textlabel=$('<p class="pcode2">The tasks in range are:</p>');
+    $mapdiv2=$('<div id="mapview-mapdiv"></div>').addClass("mapstyle2");
+    $mapform2.append($mapdiv2);
+
+    $taskdiv=$('<div id="taskdiv"></div>');
+    $mapform2.append($taskdiv);
+    $formdiv2.append($mapform2);
+    $('body').append($formdiv2);  
+};
+
+function findTodaysDate(){
+    var today = new Date().getDate();
+    var alldates = document.getElementsByClassName("cellformat");
+    for (var i=0; i < alldates.length;i++){
+        if (alldates[i].innerHTML == today){
+          var selecteddate = alldates[i];
+          selecteddate.setAttribute("class","todaysdate");
+        }
+    }
+};
+
+
+
+$(function(){      
+
+    createInitialPageView();
+   // createMonthHeaderView();
+    createGridOfDatesView();
+    createTaskEntryForm();
+    createTaskEditForm();
+    createMapView();
+    findTodaysDate();
+     
+  
+function changeFormToVisible(formtochange){
+    console.log(formtochange); 
+    var changeform = $('#'+ formtochange);
+    console.log(changeform);
+    changeform.addClass('visible').removeClass('hidden');  
+    
+} ;
+
+function changeFormHeader(dateselected, month, year){
+    $('p.headtext').text([dateselected]+ ' '+month+' ' + year);
+};
+
+function chooseAFormToDisplay(dateselected){
+    if (taskEntries[dateselected] === ""){
+        return 'entire-div'
+        }
+    else {
+        return 'secondDiv';
+        }
+};    
+
+$( "#grid" ).click(function(){
+          dateselected=event.target.textContent;
+          var formtochange = chooseAFormToDisplay(dateselected);
+          changeFormHeader(formtochange,dateselected,month,year);
+          changeFormToVisible(formtochange);
+              
+              
+
+            //  $('#headtext2').text([dateselected]+" November 2015");
+             $('#oldtextId').text(taskEntries[dateselected]);   //put text in from the object taskEntries
+            // } 
+     //   }
+    });      
+
+  //****SAVE/SUBMIT BUTTON
+$('#submitbutton').click(function(){
+    event.preventDefault(); 
+   event.stopPropagation();
+        var textEntered=$('textarea').val(); 
+        
+        taskEntries[dateselected]=textEntered;
+        console.log("And the storage array is",taskEntries);
+        console.log("And the coords are",locationsArray[dateselected]);
+        console.log("Whole array is...",locationsArray);
+    
+        if (textEntered===""){
+          alert('Hey, enter something before you save - or press Cancel');   
+        }
+        if (taskEntries[dateselected] !== "") {       // if there is an entry, change shading.
+            $('#'+ dateselected).css("background-color", "aqua");
+        }  
+        $('#taskWords').val('');           //empty the textbox  
+        dateselected="";              // change the dateselected back to nothing
+       $('#entire-div').addClass("hidden").removeClass("visible");    //hide form
+    });  
+
+//***** CANCEL BUTTON
+$( "#cancelbutton" ).click(function(){
+    event.preventDefault(); 
+    event.stopPropagation();   
+    
+    $('#taskWords').val('');                           //empty the textfield                         
+    $('#entire-div').addClass("hidden").removeClass("visible"); // hide the form                          
+    $('#'+ dateselected).css("background-color", "white");    //return the highlighting off  
+    dateselected="";       //reset the date selected
+    });    
+
+//** FORM2 BUTTON CLOSE
+$( "#closebutton" ).click(function(){
+    event.preventDefault(); 
+    event.stopPropagation();
+    //cancel form = delete text, turn to hidden, and empty textbox
+        taskEntries.dateselected="";  
+        $('#secondDiv').addClass("hidden").removeClass("visible"); 
+        $('#'+ dateselected).css("background-color", "aqua");
+        dateselected="";
+     });    
+
+//*****  FORM2 EDIT BUTTON
+    $( "#editbutton" ).click(function(){
+    event.preventDefault();
+    event.stopPropagation();   
+    $('#entire-div').addClass("visible").removeClass("hidden"); 
+    $('#secondDiv').addClass("hidden").removeClass("visible"); 
+                      
+    $('p.headtext').text([dateselected]+" November 2015");   //assign date to header of the 1st form.
+    var existing =taskEntries[dateselected];
+    console.log("existing is....",existing); 
+    }); 
+
+//**** ReMOVE BUTTON
+$( "#removebutton" ).click(function(){
+    event.preventDefault(); 
+    event.stopPropagation();
+     console.log("Date selected is now:",dateselected);
+     $('#'+ dateselected).css("background-color", "white");   //remove shading on main form  
+     taskEntries[dateselected]="";                     // change the current date entry to empty string
+     $('#secondDiv').addClass("hidden").removeClass("visible");    //change form 2 to be hidden.
+    });       
+
+
+$("#mapviewbutton").click(function () {   // to display all tasks on 1 map
+    event.preventDefault(); 
+    event.stopPropagation();
+    console.log("got here too!!!!");
+    $('#formdiv2').addClass("mapsurround2").removeClass("hidden");
+  //  geoTest();  //go and get users current location as starting point for map.
+    var olat= -41.28;
+    var olng= 174.77;
+    var mapOptions={ 
+        center:new google.maps.LatLng(olat,olng),
+        zoom:12   };
+
+    var mylatlng = new google.maps.LatLng(olat, olng);
+    console.log("mylatlng", mylatlng);
+    var map= new google.maps.Map(document.getElementById("mapview-mapdiv"),mapOptions);
+    var marker = new google.maps.Marker({
+                position:{lat: olat, lng: olng},
+                map: map,
+                title: 'Your task is here!',
+               });  
+
+
+//slider functionality
+    $(function() {
+        $("#slider-range").slider({
+          range: true,
+          min: 1,
+          max: 30,
+          values:[1,20],
+      
+        slide: function( event, ui ) {
+                  $( "#slidevalue" )
+                     .val(ui.values[ 0 ] + " - " + ui.values[ 1 ] + "  November");
+               },
+        start: function( event, ui ) {
+                  $( "#startvalue" )
+                     .val(ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+               },
+        stop: function( event, ui ) {
+                  $( "#stopvalue" )
+                    .val(ui.values[ 0 ] + " - " + ui.values[ 1 ] ); 
+                    var counter=ui.values[0];
+
+                    var map = new google.maps.Map(document.getElementById('mapview-mapdiv'), {
+                              zoom: 10,
+                              center: new google.maps.LatLng(klat,klng),
+                              mapTypeId: google.maps.MapTypeId.ROADMAP
+                            });
+
+          
+
+                    var marker, i, tkcount;
+                    var tkcount=0;
+                    var infowindow = new google.maps.InfoWindow();
+                    for (i=ui.values[0];i<ui.values[1]; i++){
+                        if (taskEntries[i]!==""){
+                            tkcount=tkcount+1;
+                        }
+                    }
+                    $taskcount=$('<p>There are,"tkcount,"tasks in this range:</p>');
+                    $taskdiv.append($taskcount);
+
+                    for (i=counter;i<ui.values[1]; i++){
+                        marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(locationsArray[i][0], locationsArray[i][1]),
+                            map: map,
+                            
+                            });
+
+                        if (taskEntries[i]!==""){
+                            var numtasks=numtasks+1;
+                            $textbox4=$('<div id="textbox4"></div>');
+                            $ptext4=$('<p></p>');
+                            $ptext4.val=taskEntries[i];
+                            console.log("what text you got?",$ptext4.val);
+                           // if (ptext4.val!==""{
+                            $linebr=$('<br></br>'); 
+                            $textbox4.append(i," Nov: ",$ptext4.val).append($linebr);
+                            $taskdiv.append($textbox4);  
+                            $taskdiv.append($linebr);
+                            $taskdiv.append($linebr);
+                            }
+
+                        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                            return function() {
+                                  infowindow.setContent(taskEntries[i]);
+                                  infowindow.open(map, marker);
+                                }
+                              })(marker, i));
+                        }   //end of for loop
+                          
+            },  //end of slider stop function
+         });  //end of .slider function
+      });  //end of  slider functionality function call
+    });  //end of mapview
+
+$( "#gobackbutton" ).click(function(){
+    event.preventDefault(); 
+    event.stopPropagation();   
+                            
+    $('#formdiv2').addClass("hidden").removeClass("mapsurround2");                          
+    $('#textbox4')=$('<div id="textbox4"></div>');
+    });    
+
+
+
+$( "#findbutton" ).click(function(){
+        event.preventDefault(); 
+        event.stopPropagation();     
+          //reset the date selected
+    
+    var search=$('#postcode').val();
+    // var characterReg = /([a-zA-Z0-9])/; 
+    // if(!characterReg.test(search)) {
+    //     $(this).after('<span class="error-text">Between 4 - 6 characters please.</span>');
+    // }
+    var url=('http://api.postcodes.io/postcodes/'+ search);
+    console.log("url is...",url);
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', encodeURI(url));
+    xhr.onload = function() {
+        if (xhr.status !== 200) {
+            console.log('Not OK: ' + xhr.status);
+             return;
+        }
+        var data = JSON.parse(xhr.responseText);
+  
+        klat= data.result.latitude;
+        klng= data.result.longitude;
+        var mapOptions={ 
+        center:new google.maps.LatLng(klat,klng),
+        zoom:12   };
+
+        var mylatlng = new google.maps.LatLng(klat, klng);
+        console.log("mylatlng", mylatlng);
+        var map= new google.maps.Map(document.getElementById("map"),mapOptions);
+        var marker = new google.maps.Marker({
+                    position:{lat: klat, lng: klng},
+                    map: map,
+                    title: 'Your task is here!',
+                  });    
+    
+        locationsArray[dateselected]=[klat,klng];
+        console.log("Storage entry is: ",locationsArray[dateselected]);
+    };
+    xhr.send();
+    
+  });
+
+
+});
+
+</script>
+</body>
+</html>
