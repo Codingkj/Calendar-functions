@@ -19,7 +19,7 @@
   left:2vw;
 }
 
-#entireDiv{
+#entire-div{
   width:60vw;
   background-color: #ffcce6;
   height:30vw;
@@ -123,23 +123,24 @@
   border-style: solid;
   font-size: 1.5vw
 }
-.cellformat:hover{
+.active:hover{
   background-color: $hovercolor;
 }
 .todaysdate:hover{
 background-color: $hovercolor;
 }
-.colformat{
+.firstrow{
   font-family: Arial;
   font-size: 2vw;
  text-align: center;
  border-style: solid;
  border-color: navy;
+ background-color: #99ccff;
 }
 
 #calmonth { 
-    margin:50px auto; 
-    font: $headfont;
+    margin:2vw; 
+    font: $monthfont;
     display:table; 
 }
 #grid {
@@ -148,11 +149,16 @@ border-style: solid;
 border-color: blue;
 }
 
-.rowformat{
-  width:100%;
-  background-color: #99ccff;
-}
+.active{
+  border-style: solid;
+  border-color: navy;
+  border-width: 2px;
+  text-align: center;
+  font-size: 2vw;
+  padding: 1vw;
+  width:13%;
 
+}
 .inactive{
   border:#C0C0C0 solid;
 }
@@ -177,5 +183,3 @@ border-color: blue;
   border-bottom: 2px;
   border-style: solid;
 }
-.form1{}
-.form2{}

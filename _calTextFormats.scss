@@ -1,6 +1,7 @@
 
 $headfont:4vw "Helvetica Neue", Helvetica, Arial;
 $requestfont:1vw Helvetica,Arial;
+$monthfont: 4vw "Helvetica Neue", Helvetica, Arial;
 
 .error-text{
   font-size: 0.8vw;
@@ -9,6 +10,9 @@ $requestfont:1vw Helvetica,Arial;
   color:red;
   font-style: bold;
 
+}
+.highlight{
+  background-color: yellow;
 }
 
 #textbox4{
@@ -45,11 +49,8 @@ $requestfont:1vw Helvetica,Arial;
   font: 2vw "Helvetica Neue", Helvetica, Arial; 
   text-align: center;
 }
-.headtext2{
-  font: 2vw "Helvetica Neue", Helvetica, Arial; 
-  text-align: center;
-}
-.headtext {
+
+.headingtext {
   font: 2vw "Helvetica Neue", Helvetica, Arial; 
   text-align: center;
 }
@@ -73,6 +74,12 @@ $requestfont:1vw Helvetica,Arial;
   font-size: 1.5vw;
 }
 .calMonth{
-  font: 3vw "Helvetica Neue", Helvetica, Arial; 
+  font: $monthfont; 
   text-align: center;
+  margin:1vw;
+}
+.month-header{
+  z-index:2;
+  border-bottom: 2px;
+  border-style: solid;
 }
