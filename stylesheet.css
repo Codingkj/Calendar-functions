@@ -88,12 +88,12 @@
   left: 3vw; }
 
 #mapviewbutton {
-  size: 15;
   color: green;
   font-weight: bold;
   position: relative;
-  top: 8vw;
-  height: 2vw; }
+  top: 5vw;
+  height: 2vw;
+  width: 8vw; }
 
 #gobackbutton {
   position: relative;

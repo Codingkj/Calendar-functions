@@ -45,10 +45,6 @@
     $('body').append($divtop);
 
 
- // var Model = function modelInit(){
-//put in here all the stuff that sets up the model, where model is the data store.
-// Model is data structure. test: if you don't impact on view/DOM its model.
-
     for (var x=0;x<31;x++){
       taskEntries[x]="";}
 
@@ -103,25 +99,32 @@
         var offsetPosition = getStartingDateCell();
         var dayInTheMonth=1;
          
-
-        for (var x=0;x<startCell-1;x++){
-            cellsThatCanHaveDates[x]="";
-            daysToUse.push(cellsThatCanHaveDates[y]);
-        }
-      
-        for (var y=startCell-1; y<daysInMonth+startCell;y++){
+        function setBlanksAtStartOfMonth(){
+            for (var x=0;x<startCell-1;x++){
+                cellsThatCanHaveDates[x]="";
+                daysToUse.push(cellsThatCanHaveDates[x]);
+            }
+        };
+        function setNumberstoArray(){
+            for (var y=startCell-1; y<daysInMonth+startCell;y++){
                 cellsThatCanHaveDates[y]=dayInTheMonth;
                 dayInTheMonth=dayInTheMonth+1;
                 daysToUse.push(cellsThatCanHaveDates[y].toString());
-        }   
+            } 
+        };  
+        function assignArrayValuesToTablePosition(){
+            $.each(daysToUse, function(index) {
+                if(!(index%numCols)) tableRow = $('<tr>');
 
-        $.each(daysToUse, function(index) {
-            if(!(index%numCols)) tableRow = $('<tr>');
+                cell = $('<td>').html(daysToUse[index]);
+                cell.addClass('active');
+                $('#grid').append(tableRow.append(cell)); 
+            });        
+        };
 
-            cell = $('<td>').html(daysToUse[index]);
-            cell.addClass('active');
-            $('#grid').append(tableRow.append(cell)); 
-        }); 
+        setBlanksAtStartOfMonth(); 
+        setNumberstoArray();   
+        assignArrayValuesToTablePosition();
     }
 
     assignWeekdayLabelsToColumns();
@@ -136,7 +139,7 @@
 
 
   function createTaskEntryForm(){
-    $formdiv=$('<div id="entire-div"></div>').addClass('hidden');  // 
+    $formdiv=$('<div id="first-div"></div>').addClass('hidden');  // 
     $taskform = $('<form id="taskform"></form>'); 
     $formheader=$('<p id="headtext"></p>').addClass('headingtext');  //
     $taskform.append($formheader);
@@ -162,10 +165,10 @@
   };
 
 function createTaskEditForm(){
-    $secondformdiv=$('<div id="secondDiv"></div>').addClass("hidden");
+    $secondformdiv=$('<div id="second-div"></div>').addClass("hidden");
     $secondtaskform=$('<form id="secondformpage"></form>');
     $secondformheader=$('<p id="headtext"></p>').addClass("headingtext");
-    $secondtextfield=$('<p id="oldtextId"></p>').addClass("oldtext");
+    $secondtextfield=$('<p id="storedTextId"></p>').addClass("oldtext");
     $closefield=$('<button id="closebutton">CLOSE</button>');   
     $editfield=$('<button>EDIT</button>').attr("ID","editbutton");      
     $removefield=$('<button>REMOVE</button>').attr("id","removebutton");  
@@ -237,10 +240,10 @@ function changeFormHeader(dateselected, month, year){
 
 function chooseAFormToDisplay(dateselected){
     if (taskEntries[dateselected] === ""){
-        return 'entire-div'
+        return 'first-div'
         }
     else {
-        return 'secondDiv';
+        return 'second-div';
         }
 };  
 
@@ -253,7 +256,7 @@ function unHighlightDate(date){
 };
 
 function displayExistingTask(dateselection){
-    $('#oldtextId').text(taskEntries[dateselection]); 
+    $('#storedTextId').text(taskEntries[dateselection]); 
 };
 
 function checkForValidTaskEntry(text){
@@ -298,7 +301,7 @@ $('#submitbutton').click(function(){
     checkForValidTaskEntry(textEntered);
     storeTaskEntry(textEntered,dateselected);
     highlightDate(dateselected);    
-    changeFormToHidden('entire-div');  
+    changeFormToHidden('first-div');  
     clearTaskText(); 
     });  
 
@@ -307,7 +310,7 @@ $( "#cancelbutton" ).click(function(){
     event.preventDefault(); 
     event.stopPropagation();   
                          
-    changeFormToHidden('entire-div');                      
+    changeFormToHidden('first-div');                      
     unHighlightDate(dateselected);    //return the highlighting off 
     clearTaskText();
 });    
@@ -318,7 +321,7 @@ $( "#closebutton" ).click(function(){
     event.stopPropagation();
     //cancel form = delete text, turn to hidden, and empty textbox
     taskEntries.dateselected="";  
-    changeFormToHidden('secondDiv');
+    changeFormToHidden('second-div');
     highlightDate(dateselected);
     dateselected="";
 });    
@@ -327,7 +330,7 @@ $( "#closebutton" ).click(function(){
 $( "#editbutton" ).click(function(){
         event.preventDefault();
         event.stopPropagation();   
-        changeFormToVisible('secondDiv');     
+        changeFormToVisible('second-div');     
 }); 
 
 //**** ReMOVE BUTTON
@@ -336,8 +339,8 @@ $( "#removebutton" ).click(function(){
         event.stopPropagation();
         console.log("Date selected is now:",dateselected);
         unHighlightDate(dateselected);   //remove shading on main form  
-        taskEntries[dateselected]="";                     // change the current date entry to empty string
-        changeFormToHidden('secondDiv');  //change form 2 to be hidden.
+        taskEntries[dateselected]="";                   
+        changeFormToHidden('second-div');  //change form 2 to be hidden.
 });       
 
 
@@ -346,7 +349,7 @@ $("#mapviewbutton").click(function () {   // to display all tasks on 1 map
         event.stopPropagation();
         console.log("got here too!!!!");
         $('#formdiv2').addClass("mapsurround2").removeClass("hidden");
-      //  geoTest();  //go and get users current location as starting point for map.
+
         var olat= -41.28;
         var olng= 174.77;
         var mapOptions={ 
@@ -368,8 +371,8 @@ $(function() {
         $("#slider-range").slider({
           range: true,
           min: 1,
-          max: 30,
-          values:[1,20],
+          max: 30,       //should be days in the month
+          values:[1,20], 
       
         slide: function( event, ui ) {
                   $( "#slidevalue" )
@@ -397,7 +400,7 @@ $(function() {
                             tkcount=tkcount+1;
                         }
                     }
-                    $taskcount=$('<p>There are,{tkcount},tasks in this range:</p>');
+                    $taskcount=$('<p>There are,"tkcount,"tasks in this range:</p>');
                     $taskdiv.append($taskcount);
 
                     for (i=counter;i<ui.values[1]; i++){
@@ -481,7 +484,6 @@ $( "#findbutton" ).click(function(){
             console.log("Storage entry is: ",locationsArray[dateselected]);
         };
         xhr.send();
-        
       });
 
 });
