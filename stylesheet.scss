@@ -18,6 +18,13 @@
   position:relative;
   left:2vw;
 }
+#slider label {
+  position: absolute;
+  width: 20px;
+  margin-top: 20px;
+  margin-left: -10px;
+  text-align: center;
+}
 
 #entire-div{
   width:60vw;
@@ -174,8 +181,8 @@ border-color: blue;
   border-style: solid;
   border-color: black;
   background-color: white;
-  width:45vw;
-  height:25vw;
+  width:60vw;
+  height:30vw;
 }
 
 .month-header{

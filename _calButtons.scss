@@ -5,14 +5,16 @@
   position: relative;
   left:3vw;
 }
-#mapviewbutton{
-  
+#mapViewButton{
   color:green;
-  font-weight: bold;
+  font-weight: 400;
+  font-size: 1.5vw;
   position: relative;
-  top:5vw;
-  height:2vw;
-  width:8vw;
+  float:right;
+  right:5vw;
+  top:1vw;
+  height:3vw;
+  width:15vw;
 }
 #gobackbutton{
   position:relative;
@@ -24,7 +26,7 @@
   height: 2vw;
   margin-top: 1vw;
 }
-#taskform{
+#taskForm{
   width:50vw;
 }
 #findbutton{

@@ -13,11 +13,9 @@
   <link rel="stylesheet" href="../../jquery-ui-1.11.4/jquery-ui.css">
   <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
   <script src="../../jquery-ui-1.11.4/jquery-ui.js"></script>
-   
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZgE4487vDwz7ZksO5AAOMqFuuENHT_CY&signed_in=true"
     //     async defer>
 </script> -->
-
 </head>
 <body>
 
@@ -25,80 +23,82 @@
    </script>
   <script>
 
-    var month= "November"; 
-    var dateselected="";    //could move this
+    var dateSelected="";    //could move this
     var taskEntries={};
-    var year='2015';
-    var numCols = 7; 
+    var currentYear = new Date().getFullYear();
+     
+    var maximumNumberOfDays=31;
+    var locationsArray=new Array(maximumNumberOfDays); 
 
-  function findInitialMonth(){
-
-  };  
-
-  function createInitialPageView(){
+  function createInitialPageView(month){
     //put in here everything that creates the DOM.
-    $divtop= $('<div></div>');//.addClass("month-header");
-    $headx =$('<p></p>').addClass("calMonth").text("November 2015"); 
-    $mapviewbutton=$('<button id="mapviewbutton" type="button">View Tasks by Map</button>');
-    $divtop.append($mapviewbutton);
-    $divtop.append($headx);
-    $('body').append($divtop);
+    $divTop= $('<div></div>');//.addClass("month-header");
+    $pageHeader =$('<p></p>').addClass("calendarMonth").text(month+' '+currentYear); 
+    $mapViewButton=$('<button id="mapViewButton" type="button">View Tasks by Map</button>');
+    $divTop.append($mapViewButton);
+    $divTop.append($pageHeader);
+    $('body').append($divTop);
 
-
-    for (var x=0;x<31;x++){
+    for (var x=0;x<maximumNumberOfDays;x++){
       taskEntries[x]="";}
 
-    var locationsArray=new Array(30);  
-     for (var i = 0; i < 30; i++) {
+    for (var i = 0; i < maximumNumberOfDays; i++) {
           locationsArray[i] = new Array(2);
           locationsArray[i]=[];
         }
     var bounds = new google.maps.LatLngBounds();  //could move this
 };
 
-  function getDatesinMonth(month,year){
-    //replace for loop with real code
-    var datesInMonth=30;
-    var dateArray=[];
-    for (var counter;counter<30;counter++){
-        dateArray.push=(counter+1);
-    }
-    return dateArray;
-  };
 
-  function createGridOfDatesView(){
+function GetMonthName(month){
+    var monthNamesArray=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    currentMonthName = monthNamesArray[month-1];
+    return currentMonthName;
+};
 
-    var daynames = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]; 
-    var daysInMonth=30;
+  
 
-    var table1=document.createElement('table');
-    table1.setAttribute("id","grid");  
-    document.body.appendChild(table1);
-    
-    function assignWeekdayLabelsToColumns(){
-            $.each(daynames, function(index) {
+function createGridOfDatesView(month){
+    var dayNames = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']; 
+
+    var daysInMonth= new Date(currentYear, month, 0).getDate();
+    var firstOfTheMonth = new Date( 'November'+ ' 1, 2015 00:00:00');
+    var numCols = 7; 
+
+    var weekdayStart = firstOfTheMonth.getDay();
+    startCell = 7 - weekdayStart;
+    var daysToUse=[];
+    var cellsThatCanHaveDates=$('datecell');  
+    var dayInTheMonth=1;
+    var totalDaysInMonth=30;
+
+    $table1= $('<table id="grid"></table>');
+    $('body').append($table1);
+
+        function assignWeekdayLabelsToColumns(){
+            $.each(dayNames, function(index) {
             if(!(index%numCols)) tableRow = $('<tr>');
 
-            cell = $('<td>').html(daynames[index]);
+            cell = $('<td>').html(dayNames[index]);
             cell.addClass('firstrow');
             $('#grid').append(tableRow.append(cell)); 
+            });
+        };
+    
+        function getDatesinMonth(year,month){
+            //replace for loop with real code
+            var monthStart = new Date(year, month, 1);
+            var monthEnd = new Date(year, month + 1, 1);
+            var datesinMonth = (monthEnd - monthStart) / (1000 * 60 * 60 * 24);
+            
+            var dateArray=[];
+            for (var counter;counter<datesinMonth;counter++){
+                dateArray.push=(counter+1);
+            }
+            dateCount=dateArray.length;
+            return dateCount;
+          };
 
-        });
-    };
-
-    function getStartingDateCell(){
-        var firstOfTheMonth = new Date('November 1, 2015 00:00:00');
-        var weekdayStart = firstOfTheMonth.getDay();
-        startCell = 7 - weekdayStart;
-        return startCell;
-    };
-
-    function assignDatesToCells(daysInMonth){
-        var daysToUse=[];
-        var cellsThatCanHaveDates=$('datecell');  
-        var offsetPosition = getStartingDateCell();
-        var dayInTheMonth=1;
-         
         function setBlanksAtStartOfMonth(){
             for (var x=0;x<startCell-1;x++){
                 cellsThatCanHaveDates[x]="";
@@ -106,7 +106,7 @@
             }
         };
         function setNumberstoArray(){
-            for (var y=startCell-1; y<daysInMonth+startCell;y++){
+            for (var y=startCell-1; y<totalDaysInMonth+startCell-1;y++){
                 cellsThatCanHaveDates[y]=dayInTheMonth;
                 dayInTheMonth=dayInTheMonth+1;
                 daysToUse.push(cellsThatCanHaveDates[y].toString());
@@ -121,74 +121,67 @@
                 $('#grid').append(tableRow.append(cell)); 
             });        
         };
-
+       
+        assignWeekdayLabelsToColumns();
+        getDatesinMonth(2015,'November');
         setBlanksAtStartOfMonth(); 
         setNumberstoArray();   
-        assignArrayValuesToTablePosition();
-    }
-
-    assignWeekdayLabelsToColumns();
-    getStartingDateCell();
-    assignDatesToCells(daysInMonth);
-
-  };
-
-  function createButton(buttonlabel){
+        assignArrayValuesToTablePosition();   
 
   };
 
 
   function createTaskEntryForm(){
-    $formdiv=$('<div id="first-div"></div>').addClass('hidden');  // 
-    $taskform = $('<form id="taskform"></form>'); 
-    $formheader=$('<p id="headtext"></p>').addClass('headingtext');  //
-    $taskform.append($formheader);
-    $textlabel=$('<p class="pcode2">Enter details of your task:</p>');
-    $taskform.append($textlabel);
-    $textfield=$('<textarea></textarea>');
-    $textfield.attr("id","taskWords").addClass("textbox").attr("name","textfieldname");
-    $taskform.append($textfield);
-    $mapdiv1=$('<div id="map"></div>').addClass("mapstyle");
-    $taskform.append($mapdiv1);
+    $formDiv=$('<div id="first-div"></div>').addClass('hidden');  // 
+    $taskForm = $('<form id="taskForm"></form>'); 
+    $formHeader=$('<p id="headtext"></p>').addClass('headingtext');  //
+    $taskForm.append($formHeader);
+    $textLabel=$('<p class="pcode2">Enter details of your task:</p>');
+    $taskForm.append($textLabel);
+    $textField=$('<textarea></textarea>');
+    $textField.attr("id","taskWords").addClass("textbox").attr("name","textFieldname");
+    $taskForm.append($textField);
+    $mapDiv1=$('<div id="map"></div>').addClass("mapstyle");
+    $taskForm.append($mapDiv1);
  
-    $findbutton=$('<button id="findbutton" type="button">FIND</button>');
-    $pcodelabel=$('<p class="pcode">Enter Postcode for task (if there is one):</p>');
-    $postcodebox=('<input type="text" id="postcode"></input>');
-    $taskform.append($pcodelabel).append($postcodebox).append($findbutton);
-    $submitfield=$('<button id="submitbutton">SAVE</button>'); 
-    $submitfield.attr("type","button");
-    $cancelfield=$('<button>CANCEL</button>'); 
-    $cancelfield.attr("type","button").attr("id","cancelbutton");
-    $taskform.append($submitfield).append($cancelfield);;
-    $formdiv.append($taskform);
-    $('body').append($formdiv);
+    $findButton=$('<button id="findbutton" type="button">FIND</button>');
+    $postcodeLabel=$('<p class="pcode">Enter Postcode for task (if there is one):</p>');
+    $postcodeBox=('<input type="text" id="postcode"></input>');
+    $taskForm.append($postcodeLabel).append($postcodeBox).append($findButton);
+    $submitField=$('<button id="submitbutton">SAVE</button>'); 
+    $submitField.attr("type","button");
+    $cancelField=$('<button>CANCEL</button>'); 
+    $cancelField.attr("type","button").attr("id","cancelbutton");
+    $taskForm.append($submitField).append($cancelField);;
+    $formDiv.append($taskForm);
+    $('body').append($formDiv);
   };
 
 function createTaskEditForm(){
-    $secondformdiv=$('<div id="second-div"></div>').addClass("hidden");
-    $secondtaskform=$('<form id="secondformpage"></form>');
-    $secondformheader=$('<p id="headtext"></p>').addClass("headingtext");
-    $secondtextfield=$('<p id="storedTextId"></p>').addClass("oldtext");
-    $closefield=$('<button id="closebutton">CLOSE</button>');   
-    $editfield=$('<button>EDIT</button>').attr("ID","editbutton");      
-    $removefield=$('<button>REMOVE</button>').attr("id","removebutton");  
-    $linebr=$('<br></br>');  
+    $secondFormDiv=$('<div id="second-div"></div>').addClass("hidden");
+    $secondTaskForm=$('<form id="secondformpage"></form>');
+    $secondFormHeader=$('<p id="headtext"></p>').addClass("headingtext");
+    $secondTextField=$('<p id="storedTextId"></p>').addClass("oldtext");
+    $closeField=$('<button id="closebutton">CLOSE</button>');   
+    $editField=$('<button>EDIT</button>').attr("ID","editbutton");      
+    $removeField=$('<button>REMOVE</button>').attr("id","removebutton");  
+    $lineBr=$('<br></br>');  
 
-    $secondtaskform.append($secondformheader).append($linebr).append($linebr).append($secondtextfield).append($linebr).append($closefield).append($editfield).append($removefield);  
-    $secondformdiv.append($secondtaskform); 
-    $('body').append($secondformdiv); 
+    $secondTaskForm.append($secondFormHeader).append($lineBr).append($lineBr).append($secondTextField).append($lineBr).append($closeField).append($editField).append($removeField);  
+    $secondFormDiv.append($secondTaskForm); 
+    $('body').append($secondFormDiv); 
 
 };
 
 function createMapView(){  //I think this is a mixture of DOM and view stuff.
-   $formdiv2=$('<div id="formdiv2"></div>').addClass("hidden");  // 
-    $mapform2 = $('<form id="mapform2"></form>'); 
-    $formheader2=$('<p id="mapheader">November Tasks by Map</p>'); 
+   $formDiv2=$('<div id="formdiv2"></div>').addClass("hidden");  // 
+    $mapForm2 = $('<form id="mapform2"></form>'); 
+    $formHeader2=$('<p id="mapheader">November Tasks by Map</p>'); 
 
-    $gobackfield=$('<button id="gobackbutton">Go back to calendar view</button>'); 
-    $gobackfield.attr("type","button");
-    $formheader2.append($gobackfield);
-    $formdiv2.append($formheader2);
+    $goBackField=$('<button id="gobackbutton">Go back to calendar view</button>'); 
+    $goBackField.attr("type","button");
+    $formHeader2.append($goBackField);
+    $formDiv2.append($formHeader2);
 
     $sliderContainer=$('<div id="slider-range"></div>');
     
@@ -200,28 +193,34 @@ function createMapView(){  //I think this is a mixture of DOM and view stuff.
     $sliderText3.append($sliderSlideInput);
     
     $sliderContainer.append($sliderText3);
-    $mapform2.append($linebr);
-    $mapform2.append($sliderContainer);
+    $mapForm2.append($lineBr);
+    $mapForm2.append($sliderContainer);
 
-    $textlabel=$('<p class="pcode2">The tasks in range are:</p>');
-    $mapdiv2=$('<div id="mapview-mapdiv"></div>').addClass("mapstyle2");
-    $mapform2.append($mapdiv2);
+    $textLabel=$('<p class="pcode2">The tasks in range are:</p>');
+    $mapDiv2=$('<div id="mapview-mapdiv"></div>').addClass("mapstyle2");
+    $mapForm2.append($mapDiv2);
 
-    $taskdiv=$('<div id="taskdiv"></div>');
-    $mapform2.append($taskdiv);
-    $formdiv2.append($mapform2);
-    $('body').append($formdiv2);  
+    $taskDiv=$('<div id="taskDiv"></div>');
+    $mapForm2.append($taskDiv);
+    $formDiv2.append($mapForm2);
+    $('body').append($formDiv2);  
 };
+
 
 function findTodaysDate(){
     var today = new Date().getDate();
+    var currentMonth = new Date().getMonth()+1;
+   
+    console.log("This currentYear",currentYear);
+   
     var alldates = document.getElementsByClassName("active");
     for (var i=0; i < alldates.length;i++){
         if (alldates[i].innerHTML == today){
-          var selecteddate = alldates[i];
-          selecteddate.setAttribute("class","todaysdate");
+          var selectedDate = alldates[i];
+          selectedDate.setAttribute("class","todaysdate");
         }
     }
+    // return;
 };
 
 function changeFormToVisible(formtochange){
@@ -234,12 +233,12 @@ function changeFormToHidden(formtochange){
     changeform.addClass('hidden').removeClass('visible'); 
 };
 
-function changeFormHeader(dateselected, month, year){
-    $('p.headingtext').text([dateselected]+ ' '+month+' ' + year);
+function changeformHeader(dateSelected, month, currentYear){
+    $('p.headingtext').text([dateSelected]+ ' '+month+' ' + currentYear);
 };
 
-function chooseAFormToDisplay(dateselected){
-    if (taskEntries[dateselected] === ""){
+function chooseAFormToDisplay(dateSelected){
+    if (taskEntries[dateSelected] === ""){
         return 'first-div'
         }
     else {
@@ -248,11 +247,23 @@ function chooseAFormToDisplay(dateselected){
 };  
 
 function highlightDate(date){
-    $('#'+ dateselected).addClass('shaded');
+    var checkdates = document.getElementsByClassName('active');
+    for (var i=0; i < checkdates.length;i++){
+        if (checkdates[i].innerHTML == date.toString()){
+          var selectedDate = checkdates[i];
+          selectedDate.setAttribute('class','shaded');
+        }
+    }
 };  
 
 function unHighlightDate(date){
-    $('#'+ dateselected).addClass('unshaded');
+    var checkdates = document.getElementsByClassName('shaded');
+    for (var i=0; i < checkdates.length;i++){
+        if (checkdates[i].innerHTML == date.toString()){
+          var selectedDate = checkdates[i];
+          selectedDate.setAttribute('class','unshaded');
+        }
+    }
 };
 
 function displayExistingTask(dateselection){
@@ -269,89 +280,9 @@ function storeTaskEntry(text,date){
 }
 function clearTaskText(){
     $('#taskWords').val('');           //empty the textbox  
-    dateselected="";              // change the dateselected back to nothing
+    dateSelected="";              // change the dateSelected back to nothing
 }
-
-$(function(){      
-
-    createInitialPageView();
-    createGridOfDatesView();
-    findTodaysDate();
-
-    createTaskEntryForm();
-    createTaskEditForm();
-    createMapView();
-        
-  
-$( ".active" ).click(function(){
-    dateselected=event.target.textContent;
-    var formtochange = chooseAFormToDisplay(dateselected);
-    changeFormHeader(dateselected,month,year);
-    changeFormToVisible(formtochange);
-    displayExistingTask(dateselected);
-    highlightDate(dateselected);
-    });      
-
-  //****SAVE/SUBMIT BUTTON
-$('#submitbutton').click(function(){
-    event.preventDefault(); 
-    event.stopPropagation();
-    var textEntered=$('textarea').val(); 
-
-    checkForValidTaskEntry(textEntered);
-    storeTaskEntry(textEntered,dateselected);
-    highlightDate(dateselected);    
-    changeFormToHidden('first-div');  
-    clearTaskText(); 
-    });  
-
-//***** CANCEL BUTTON
-$( "#cancelbutton" ).click(function(){
-    event.preventDefault(); 
-    event.stopPropagation();   
-                         
-    changeFormToHidden('first-div');                      
-    unHighlightDate(dateselected);    //return the highlighting off 
-    clearTaskText();
-});    
-
-//** FORM2 BUTTON CLOSE
-$( "#closebutton" ).click(function(){
-    event.preventDefault(); 
-    event.stopPropagation();
-    //cancel form = delete text, turn to hidden, and empty textbox
-    taskEntries.dateselected="";  
-    changeFormToHidden('second-div');
-    highlightDate(dateselected);
-    dateselected="";
-});    
-
-//*****  FORM2 EDIT BUTTON
-$( "#editbutton" ).click(function(){
-        event.preventDefault();
-        event.stopPropagation();   
-        changeFormToVisible('second-div');     
-}); 
-
-//**** ReMOVE BUTTON
-$( "#removebutton" ).click(function(){
-        event.preventDefault(); 
-        event.stopPropagation();
-        console.log("Date selected is now:",dateselected);
-        unHighlightDate(dateselected);   //remove shading on main form  
-        taskEntries[dateselected]="";                   
-        changeFormToHidden('second-div');  //change form 2 to be hidden.
-});       
-
-
-$("#mapviewbutton").click(function () {   // to display all tasks on 1 map
-        event.preventDefault(); 
-        event.stopPropagation();
-        console.log("got here too!!!!");
-        $('#formdiv2').addClass("mapsurround2").removeClass("hidden");
-
-        var olat= -41.28;
-        var olng= 174.77;
+function displayStarterMap(olat,olng){
         var mapOptions={ 
             center:new google.maps.LatLng(olat,olng),
             zoom:12   };
@@ -364,27 +295,110 @@ $("#mapviewbutton").click(function () {   // to display all tasks on 1 map
                     map: map,
                     title: 'Your task is here!',
                    });  
+};
+
+function clearTasksInSliderView(){
+    $cleartext4 = $('#textbox4');
+    $cleartext4.val="";
+};
+
+$(function(){      
+    var month=GetMonthName(11);  //month should now equal November
+    createInitialPageView(month);
+    console.log("the month is now",month);
+    createGridOfDatesView(month);
+    findTodaysDate();   //this should return current month at least.
+    createTaskEntryForm();
+    createTaskEditForm();
+    createMapView();
+        
+  
+    $( ".active" ).click(function(){
+        dateSelected=event.target.textContent;
+        var formtochange = chooseAFormToDisplay(dateSelected);
+        changeformHeader(dateSelected,month,currentYear);
+        changeFormToVisible(formtochange);
+        displayExistingTask(dateSelected);
+        highlightDate(dateSelected);
+        });      
+
+  //****SAVE/SUBMIT BUTTON
+    $('#submitbutton').click(function(){
+        event.preventDefault(); 
+        event.stopPropagation();
+        var textEntered=$('textarea').val(); 
+
+        checkForValidTaskEntry(textEntered);
+        storeTaskEntry(textEntered,dateSelected);
+        highlightDate(dateSelected);    
+        changeFormToHidden('first-div');  
+        clearTaskText(); 
+    });  
+
+    //***** CANCEL BUTTON
+    $( "#cancelbutton" ).click(function(){
+        event.preventDefault(); 
+        event.stopPropagation();   
+                             
+        changeFormToHidden('first-div');                      
+        unHighlightDate(dateSelected);    //return the highlighting off 
+        clearTaskText();
+    });    
+
+    //** FORM2 BUTTON CLOSE
+    $( "#closebutton" ).click(function(){
+        event.preventDefault(); 
+        event.stopPropagation();
+        //cancel form = delete text, turn to hidden, and empty textbox
+        taskEntries.dateSelected="";  
+        changeFormToHidden('second-div');
+        highlightDate(dateSelected);
+        dateSelected="";
+    });    
+
+    //*****  FORM2 EDIT BUTTON
+    $( "#editbutton" ).click(function(){
+            event.preventDefault();
+            event.stopPropagation();   
+            changeFormToVisible('second-div');     
+    }); 
+
+    //**** ReMOVE BUTTON
+    $( "#removebutton" ).click(function(){
+            event.preventDefault(); 
+            event.stopPropagation();
+
+            unHighlightDate(dateSelected);   //remove shading on main form  
+            taskEntries[dateSelected]="";                   
+            changeFormToHidden('second-div');  //change form 2 to be hidden.
+    });       
 
 
-//slider functionality
-$(function() {
+    $("#mapViewButton").click(function () {   // to display all tasks on 1 map
+        event.preventDefault(); 
+        event.stopPropagation();
+        console.log("got here too!!!!");
+        $('#formdiv2').addClass("mapsurround2").removeClass("hidden");
+
+        //slider functionality
+        $ (function() {
+
         $("#slider-range").slider({
           range: true,
           min: 1,
           max: 30,       //should be days in the month
           values:[1,20], 
+          step:1,
       
         slide: function( event, ui ) {
-                  $( "#slidevalue" )
-                     .val(ui.values[ 0 ] + " - " + ui.values[ 1 ] + "  November");
+                  $( "#slidevalue" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] + "  November");
                },
         start: function( event, ui ) {
-                  $( "#startvalue" )
-                     .val(ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                  $( "#startvalue" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                },
         stop: function( event, ui ) {
-                  $( "#stopvalue" )
-                    .val(ui.values[ 0 ] + " - " + ui.values[ 1 ] ); 
+                clearTasksInSliderView();
+                $( "#stopvalue" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] ); 
                     var counter=ui.values[0];
                     var map = new google.maps.Map(document.getElementById('mapview-mapdiv'), {
                               zoom: 10,
@@ -395,33 +409,31 @@ $(function() {
                     var marker, i, tkcount;
                     var tkcount=0;
                     var infowindow = new google.maps.InfoWindow();
+                                
                     for (i=ui.values[0];i<ui.values[1]; i++){
                         if (taskEntries[i]!==""){
                             tkcount=tkcount+1;
                         }
                     }
-                    $taskcount=$('<p>There are,"tkcount,"tasks in this range:</p>');
-                    $taskdiv.append($taskcount);
+                    $taskcount=$('<p>There are '+ tkcount +' tasks in this range:</p>');
+                    $taskDiv.append($taskcount);
 
                     for (i=counter;i<ui.values[1]; i++){
                         marker = new google.maps.Marker({
                             position: new google.maps.LatLng(locationsArray[i][0], locationsArray[i][1]),
-                            map: map,
-                            
+                            map: map
                             });
 
                         if (taskEntries[i]!==""){
                             var numtasks=numtasks+1;
                             $textbox4=$('<div id="textbox4"></div>');
-                            $ptext4=$('<p></p>');
-                            $ptext4.val=taskEntries[i];
-                            console.log("what text you got?",$ptext4.val);
-                           // if (ptext4.val!==""{
+                            $ptext4=$('<p></p>').val="";
+                            console.log("tesk text",taskEntries[i]);
                             $linebr=$('<br></br>'); 
-                            $textbox4.append(i," Nov: ",$ptext4.val).append($linebr);
-                            $taskdiv.append($textbox4);  
-                            $taskdiv.append($linebr);
-                            $taskdiv.append($linebr);
+                            $textbox4.append(i," Nov: ",taskEntries[i]).append($linebr);
+                            $taskDiv.append($textbox4);  
+                            $taskDiv.append($linebr);
+                            $taskDiv.append($linebr);
                             }
 
                         google.maps.event.addListener(marker, 'click', (function(marker, i) {
@@ -437,54 +449,55 @@ $(function() {
       });  //end of  slider functionality function call
     });  //end of mapview
 
-$( "#gobackbutton" ).click(function(){
-        event.preventDefault(); 
-        event.stopPropagation();   
-                                
-        $('#formdiv2').addClass("hidden").removeClass("mapsurround2");                          
-        $('#textbox4')=$('<div id="textbox4"></div>');
-    });    
+    $( "#gobackbutton" ).click(function(){
+            event.preventDefault(); 
+            event.stopPropagation();   
+                                    
+            $('#formDiv2').addClass("hidden").removeClass("mapsurround2");
+            clearTasksInSliderView();                          
+         
+        });    
 
 
-$( "#findbutton" ).click(function(){
-        event.preventDefault(); 
-        event.stopPropagation();     
-        var search=$('#postcode').val();
-        // var characterReg = /([a-zA-Z0-9])/; 
-        // if(!characterReg.test(search)) {
-        //     $(this).after('<span class="error-text">Between 4 - 6 characters please.</span>');
-        // }
-        var url=('http://api.postcodes.io/postcodes/'+ search);
-        console.log("url is...",url);
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', encodeURI(url));
-        xhr.onload = function() {
-            if (xhr.status !== 200) {
-                console.log('Not OK: ' + xhr.status);
-                 return;
-            }
-            var data = JSON.parse(xhr.responseText);
-      
-            klat= data.result.latitude;
-            klng= data.result.longitude;
-            var mapOptions={ 
-            center:new google.maps.LatLng(klat,klng),
-            zoom:12   };
+    $( "#findbutton" ).click(function(){
+            event.preventDefault(); 
+            event.stopPropagation();     
+            var search=$('#postcode').val();
+            // var characterReg = /([a-zA-Z0-9])/; 
+            // if(!characterReg.test(search)) {
+            //     $(this).after('<span class="error-text">Between 4 - 6 characters please.</span>');
+            // }
+            var url=('http://api.postcodes.io/postcodes/'+ search);
+            console.log("url is...",url);
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', encodeURI(url));
+            xhr.onload = function() {
+                if (xhr.status !== 200) {
+                    console.log('Not OK: ' + xhr.status);
+                     return;
+                }
+                var data = JSON.parse(xhr.responseText);
+          
+                klat= data.result.latitude;
+                klng= data.result.longitude;
+                var mapOptions={ 
+                center:new google.maps.LatLng(klat,klng),
+                zoom:12   };
 
-            var mylatlng = new google.maps.LatLng(klat, klng);
-            console.log("mylatlng", mylatlng);
-            var map= new google.maps.Map(document.getElementById("map"),mapOptions);
-            var marker = new google.maps.Marker({
-                        position:{lat: klat, lng: klng},
-                        map: map,
-                        title: 'Your task is here!',
-                      });    
-        
-            locationsArray[dateselected]=[klat,klng];
-            console.log("Storage entry is: ",locationsArray[dateselected]);
-        };
-        xhr.send();
-      });
+                var mylatlng = new google.maps.LatLng(klat, klng);
+                console.log("mylatlng", mylatlng);
+                var map= new google.maps.Map(document.getElementById("map"),mapOptions);
+                var marker = new google.maps.Marker({
+                            position:{lat: klat, lng: klng},
+                            map: map,
+                            title: 'Your task is here!',
+                          });    
+            
+                locationsArray[dateSelected]=[klat,klng];
+                console.log("Storage entry is: ",locationsArray[dateSelected]);
+            };
+            xhr.send();
+          });
 
 });
 
