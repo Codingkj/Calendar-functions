@@ -25,8 +25,9 @@
 
     var dateSelected="";    //could move this
     var taskEntries={};
+    var cache = {};
     var currentYear = new Date().getFullYear();
-     
+    var currentMonth = new Date().getMonth()+1; 
     var maximumNumberOfDays=31;
     var locationsArray=new Array(maximumNumberOfDays); 
 
@@ -50,27 +51,26 @@
 };
 
 
-function GetMonthName(month){
-    var monthNamesArray=['January','February','March','April','May','June','July','August','September','October','November','December'];
-    currentMonthName = monthNamesArray[month-1];
+function getMonthName(){
+    var monthNamesArray=['January','February','March','April','May','June','July','August','September','October','December','December'];
+    currentMonthName = monthNamesArray[currentMonth-1];
     return currentMonthName;
 };
-
   
 
 function createGridOfDatesView(month){
     var dayNames = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']; 
 
-    var daysInMonth= new Date(currentYear, month, 0).getDate();
-    var firstOfTheMonth = new Date( 'November'+ ' 1, 2015 00:00:00');
-    var numCols = 7; 
-
+    var target=getMonthName(month);
+    var firstOfTheMonth = new Date(target+' 1, 2015 00:00:00');
     var weekdayStart = firstOfTheMonth.getDay();
-    startCell = 7 - weekdayStart;
+    console.log("weekdayStart",weekdayStart);
+    var numCols = 7; 
+    startCell = weekdayStart;
     var daysToUse=[];
     var cellsThatCanHaveDates=$('datecell');  
     var dayInTheMonth=1;
-    var totalDaysInMonth=30;
+   
 
     $table1= $('<table id="grid"></table>');
     $('body').append($table1);
@@ -85,17 +85,21 @@ function createGridOfDatesView(month){
             });
         };
     
-        function getDatesinMonth(year,month){
-            //replace for loop with real code
-            var monthStart = new Date(year, month, 1);
-            var monthEnd = new Date(year, month + 1, 1);
-            var datesinMonth = (monthEnd - monthStart) / (1000 * 60 * 60 * 24);
+        
+        function getDatesInCurrentMonth(){        
+                var cache;
+                var dateCount;
+                
+                // if (cache[currentYear +'_'+ month]){
+                //     console.log("getting value from cache");
+                //     return cache[currentYear +'_'+ month];
+                // }
+                
+                dateCount = new Date(currentYear, currentMonth, null).getDate();
+                console.log("dates in Month",dateCount);
+               
+                // cache[currentYear +'_'+ month] = dateCount;
             
-            var dateArray=[];
-            for (var counter;counter<datesinMonth;counter++){
-                dateArray.push=(counter+1);
-            }
-            dateCount=dateArray.length;
             return dateCount;
           };
 
@@ -105,8 +109,9 @@ function createGridOfDatesView(month){
                 daysToUse.push(cellsThatCanHaveDates[x]);
             }
         };
-        function setNumberstoArray(){
-            for (var y=startCell-1; y<totalDaysInMonth+startCell-1;y++){
+        function setNumbersToArray(){
+            var totalDays=getDatesInCurrentMonth();
+            for (var y=startCell-1; y<totalDays+startCell-1;y++){
                 cellsThatCanHaveDates[y]=dayInTheMonth;
                 dayInTheMonth=dayInTheMonth+1;
                 daysToUse.push(cellsThatCanHaveDates[y].toString());
@@ -123,9 +128,10 @@ function createGridOfDatesView(month){
         };
        
         assignWeekdayLabelsToColumns();
-        getDatesinMonth(2015,'November');
+        getDatesInCurrentMonth();
+      
         setBlanksAtStartOfMonth(); 
-        setNumberstoArray();   
+        setNumbersToArray();   
         assignArrayValuesToTablePosition();   
 
   };
@@ -174,12 +180,11 @@ function createTaskEditForm(){
 };
 
 function createMapView(){  //I think this is a mixture of DOM and view stuff.
-   $formDiv2=$('<div id="formdiv2"></div>').addClass("hidden");  // 
+   $formDiv2=$('<div id="formDiv2"></div>').addClass("hidden");  // 
     $mapForm2 = $('<form id="mapform2"></form>'); 
-    $formHeader2=$('<p id="mapheader">November Tasks by Map</p>'); 
+    $formHeader2=$('<p id="mapheader">December Tasks by Map</p>'); 
 
-    $goBackField=$('<button id="gobackbutton">Go back to calendar view</button>'); 
-    $goBackField.attr("type","button");
+    $goBackField=$('<button id="gobackbutton" type="button">Go back to calendar view</button>'); 
     $formHeader2.append($goBackField);
     $formDiv2.append($formHeader2);
 
@@ -193,6 +198,7 @@ function createMapView(){  //I think this is a mixture of DOM and view stuff.
     $sliderText3.append($sliderSlideInput);
     
     $sliderContainer.append($sliderText3);
+    $mapForm2.append($lineBr);
     $mapForm2.append($lineBr);
     $mapForm2.append($sliderContainer);
 
@@ -209,9 +215,6 @@ function createMapView(){  //I think this is a mixture of DOM and view stuff.
 
 function findTodaysDate(){
     var today = new Date().getDate();
-    var currentMonth = new Date().getMonth()+1;
-   
-    console.log("This currentYear",currentYear);
    
     var alldates = document.getElementsByClassName("active");
     for (var i=0; i < alldates.length;i++){
@@ -220,7 +223,6 @@ function findTodaysDate(){
           selectedDate.setAttribute("class","todaysdate");
         }
     }
-    // return;
 };
 
 function changeFormToVisible(formtochange){
@@ -233,8 +235,9 @@ function changeFormToHidden(formtochange){
     changeform.addClass('hidden').removeClass('visible'); 
 };
 
-function changeformHeader(dateSelected, month, currentYear){
-    $('p.headingtext').text([dateSelected]+ ' '+month+' ' + currentYear);
+function changeformHeader(dateSelected, month, year){
+    monthname = getMonthName(month);
+    $('p.headingtext').text([dateSelected]+ ' '+monthname+' '+ year);
 };
 
 function chooseAFormToDisplay(dateSelected){
@@ -282,6 +285,10 @@ function clearTaskText(){
     $('#taskWords').val('');           //empty the textbox  
     dateSelected="";              // change the dateSelected back to nothing
 }
+function clearTasksInSliderView(){
+    $cleartext4 = $('#textbox4');
+    $cleartext4.val="";
+};
 function displayStarterMap(olat,olng){
         var mapOptions={ 
             center:new google.maps.LatLng(olat,olng),
@@ -297,17 +304,13 @@ function displayStarterMap(olat,olng){
                    });  
 };
 
-function clearTasksInSliderView(){
-    $cleartext4 = $('#textbox4');
-    $cleartext4.val="";
-};
+
 
 $(function(){      
-    var month=GetMonthName(11);  //month should now equal November
-    createInitialPageView(month);
-    console.log("the month is now",month);
-    createGridOfDatesView(month);
-    findTodaysDate();   //this should return current month at least.
+    var monthname = getMonthName();  //month should now equal December
+    createInitialPageView(monthname);
+    createGridOfDatesView(monthname);
+    findTodaysDate();   
     createTaskEntryForm();
     createTaskEditForm();
     createMapView();
@@ -316,7 +319,7 @@ $(function(){
     $( ".active" ).click(function(){
         dateSelected=event.target.textContent;
         var formtochange = chooseAFormToDisplay(dateSelected);
-        changeformHeader(dateSelected,month,currentYear);
+        changeformHeader(dateSelected,currentMonth,currentYear);
         changeFormToVisible(formtochange);
         displayExistingTask(dateSelected);
         highlightDate(dateSelected);
@@ -341,7 +344,7 @@ $(function(){
         event.stopPropagation();   
                              
         changeFormToHidden('first-div');                      
-        unHighlightDate(dateSelected);    //return the highlighting off 
+        unHighlightDate(dateSelected);     
         clearTaskText();
     });    
 
@@ -350,7 +353,7 @@ $(function(){
         event.preventDefault(); 
         event.stopPropagation();
         //cancel form = delete text, turn to hidden, and empty textbox
-        taskEntries.dateSelected="";  
+        // taskEntries.dateSelected="";  
         changeFormToHidden('second-div');
         highlightDate(dateSelected);
         dateSelected="";
@@ -368,9 +371,9 @@ $(function(){
             event.preventDefault(); 
             event.stopPropagation();
 
-            unHighlightDate(dateSelected);   //remove shading on main form  
+            unHighlightDate(dateSelected);   
             taskEntries[dateSelected]="";                   
-            changeFormToHidden('second-div');  //change form 2 to be hidden.
+            changeFormToHidden('second-div');  
     });       
 
 
@@ -378,7 +381,7 @@ $(function(){
         event.preventDefault(); 
         event.stopPropagation();
         console.log("got here too!!!!");
-        $('#formdiv2').addClass("mapsurround2").removeClass("hidden");
+        $('#formDiv2').addClass("mapsurround2").removeClass("hidden");
 
         //slider functionality
         $ (function() {
@@ -391,7 +394,8 @@ $(function(){
           step:1,
       
         slide: function( event, ui ) {
-                  $( "#slidevalue" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] + "  November");
+
+                  $( "#slidevalue" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] + "  range to see");
                },
         start: function( event, ui ) {
                   $( "#startvalue" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] );
@@ -416,6 +420,8 @@ $(function(){
                             tkcount=tkcount+1;
                         }
                     }
+                    $linebr=$('<br></br>');
+                    $taskDiv.append(linebr);
                     $taskcount=$('<p>There are '+ tkcount +' tasks in this range:</p>');
                     $taskDiv.append($taskcount);
 
