@@ -197,6 +197,8 @@ function createMapView(){  //I think this is a mixture of DOM and view stuff.
     $sliderText3.append($sliderSlideLabel);
     $sliderText3.append($sliderSlideInput);
     
+
+
     $sliderContainer.append($sliderText3);
     $mapForm2.append($lineBr);
     $mapForm2.append($lineBr);
@@ -304,19 +306,36 @@ function displayStarterMap(olat,olng){
                    });  
 };
 
-
+function addMarksToSlider(){
+    var dateCount = 31;
+    for (var i = 0; i <dateCount; i++) {
+        // Create a new element and position it with percentages
+        var sliderMark = $('<label class="slidermark">' + (i + 1) + '</label>').css('left', (i/31*100));
+        // Add the element inside #slider
+        $("#slider-range").append(sliderMark);
+     }
+};
 
 $(function(){      
-    var monthname = getMonthName();  //month should now equal December
+    var monthname = getMonthName();  
     createInitialPageView(monthname);
     createGridOfDatesView(monthname);
     findTodaysDate();   
     createTaskEntryForm();
     createTaskEditForm();
     createMapView();
-        
+    addMarksToSlider();
+     
+    $( ".todaysdate").click(function(){
+        dateSelected=event.target.textContent;
+        var formtochange = chooseAFormToDisplay(dateSelected);
+        changeformHeader(dateSelected,currentMonth,currentYear);
+        changeFormToVisible(formtochange);
+        displayExistingTask(dateSelected);
+        highlightDate(dateSelected);
+        });     
   
-    $( ".active" ).click(function(){
+    $( ".active").click(function(){     //use or selector with set above
         dateSelected=event.target.textContent;
         var formtochange = chooseAFormToDisplay(dateSelected);
         changeformHeader(dateSelected,currentMonth,currentYear);
@@ -382,10 +401,9 @@ $(function(){
         event.stopPropagation();
         console.log("got here too!!!!");
         $('#formDiv2').addClass("mapsurround2").removeClass("hidden");
-
-        //slider functionality
+      
         $ (function() {
-
+        
         $("#slider-range").slider({
           range: true,
           min: 1,
@@ -393,68 +411,72 @@ $(function(){
           values:[1,20], 
           step:1,
       
-        slide: function( event, ui ) {
+            slide: function( event, ui ) {
 
-                  $( "#slidevalue" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] + "  range to see");
-               },
-        start: function( event, ui ) {
-                  $( "#startvalue" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-               },
-        stop: function( event, ui ) {
-                clearTasksInSliderView();
-                $( "#stopvalue" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] ); 
-                    var counter=ui.values[0];
-                    var map = new google.maps.Map(document.getElementById('mapview-mapdiv'), {
-                              zoom: 10,
-                              center: new google.maps.LatLng(klat,klng),
-                              mapTypeId: google.maps.MapTypeId.ROADMAP
-                            });
+                      $( "#slidevalue" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] + ' '+ monthname);
+                   },
+            start: function( event, ui ) {
+                      $( "#startvalue" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                   },
+            stop: function( event, ui ) {
+                    clearTasksInSliderView();
+                    $( "#stopvalue" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] ); 
+                        
+                        var map = new google.maps.Map(document.getElementById('mapview-mapdiv'), {
+                                  zoom: 10,
+                                  center: new google.maps.LatLng(klat,klng),
+                                  mapTypeId: google.maps.MapTypeId.ROADMAP
+                                });
 
-                    var marker; 
-                    var i;
-                    var tkcount=0;
-                    var infowindow = new google.maps.InfoWindow();
-                                
-                    for (i=ui.values[0];i<ui.values[1]; i++){
-                        if (taskEntries[i]!==""){
-                            tkcount=tkcount+1;
-                        }
-                    }
-                    $linebr=$('<br></br>');
-                    $taskDiv.append(linebr);
-                    $taskcount=$('<p>There are '+ tkcount +' tasks in this range:</p>');
-                    $taskDiv.append($taskcount);
-
-                    for (i=counter;i<ui.values[1]; i++){
-                        marker = new google.maps.Marker({
-                            position: new google.maps.LatLng(locationsArray[i][0], locationsArray[i][1]),
-                            map: map
-                            });
-
-                        if (taskEntries[i]!==""){
-                            var numtasks=numtasks+1;
-                            $textbox4=$('<div id="textbox4"></div>');
-                            $ptext4=$('<p></p>').val="";
-                            console.log("tesk text",taskEntries[i]);
-                            $linebr=$('<br></br>'); 
-                            $textbox4.append(i," Nov: ",taskEntries[i]).append($linebr);
-                            $taskDiv.append($textbox4);  
-                            $taskDiv.append($linebr);
-                            $taskDiv.append($linebr);
+                        var counter=ui.values[0];
+                        var marker; 
+                        var i;
+                        var tkcount=0;
+                        var infowindow = new google.maps.InfoWindow();
+                                    
+                        for (i=ui.values[0];i<ui.values[1]; i++){
+                            if (taskEntries[i]!==""){
+                                tkcount=tkcount+1;
                             }
+                        }
+                        $linebr=$('<br></br>');
+                        $taskDiv.append(linebr);
+                        $taskcount=$('<p>There are '+ tkcount +' tasks in this range:</p>');
+                        $taskDiv.append($taskcount);
 
-                        google.maps.event.addListener(marker, 'click', (function(marker, i) {
-                            return function() {
-                                  infowindow.setContent(taskEntries[i]);
-                                  infowindow.open(map, marker);
+                        for (i=counter;i<ui.values[1]; i++){
+                            marker = new google.maps.Marker({
+                                position: new google.maps.LatLng(locationsArray[i][0], locationsArray[i][1]),
+                                map: map
+                                });
+
+                            if (taskEntries[i]!==""){
+                                var numtasks=numtasks+1;
+                                $textbox4=$('<div id="textbox4"></div>');
+                                $ptext4=$('<p></p>').val="";
+                                console.log("tesk text",taskEntries[i]);
+                                $linebr=$('<br></br>'); 
+                                $textbox4.append(i," Nov: ",taskEntries[i]).append($linebr);
+                                $taskDiv.append($textbox4);  
+                                $taskDiv.append($linebr);
+                                $taskDiv.append($linebr);
                                 }
-                              })(marker, i));
+
+                            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                                    return function() {
+                                      infowindow.setContent(taskEntries[i]);
+                                      infowindow.open(map, marker);
+                                }
+                            })(marker, i));
                         }   //end of for loop
                           
-            },  //end of slider stop function
-         });  //end of .slider function
+                    },  //end of slider stop function
+                }); //end of .slider function
+         
       });  //end of  slider functionality function call
     });  //end of mapview
+
+
 
     $( "#gobackbutton" ).click(function(){
             event.preventDefault(); 

@@ -2,7 +2,10 @@
 @import "calTextformats";
 @import "calButtons";
 
-
+.sliderMark{
+  position:absolute;
+  font-size: 0.5vw;
+}
 #mapview-mapdiv{
 }
 #taskdiv{
@@ -17,14 +20,6 @@
   width:30vw;
   position:relative;
   left:2vw;
-}
-.ui-slider-tick-mark{
-    display:inline-block;
-    width:2px;
-    background:black;
-    height:16px;
-    position:absolute;
-    top:-4px;
 }
 
 #first-div{
