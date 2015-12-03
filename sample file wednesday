@@ -1,0 +1,30 @@
+var View = (function () {
+  
+  function getSaveTaskButtonElementName() {
+    return 'save-date-button';
+  }
+  
+  function addClickListener(elementName, callback) {
+    $('.' + elementName).on('click', callback);
+  }
+  
+  function removeClickListener(elementName) {
+    $('.' + elementName).off('click');
+  }
+  
+  return {
+    getSaveTaskButtonElementName: getSaveTaskButtonElementName,
+    addClickListener: addClickListener,
+    removeClickListener: removeClickListener
+  };
+  
+})();
+
+(function () {
+  
+  View.addClickListener(View.getSaveTaskButtonElementName(), function () {
+    Model.update();
+    View.renderSomething(Model.getUpdatedData());
+  });
+  
+})();
