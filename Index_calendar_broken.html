@@ -41,7 +41,7 @@ function createTaskEntryForm(){
     $postcodeLabel=$('<p class="pcode">Enter Postcode for task (if there is one):</p>');
     $postcodeBox=('<input type="text" id="postcode"></input>');
     $taskForm.append($postcodeLabel).append($postcodeBox).append($findButton);
-    $submitField=$('<button id="savebutton">SAVE</button>'); 
+    $submitField=$('<button id="submitbutton">SAVE</button>'); 
     $submitField.attr("type","button");
     $cancelField=$('<button>CANCEL</button>'); 
     $cancelField.attr("type","button").attr("id","cancelbutton");
@@ -66,13 +66,13 @@ function createTaskEditForm(){
 }
 
 function createMapView(){  //I think this is a mixture of DOM and view stuff.
-   $formDiv2=$('<div id="formDiv2"></div>').addClass("hidden");  // 
+    $mapDiv1=$('<div id="mapDiv1"></div>').addClass("hidden");  // 
     $mapForm2 = $('<form id="mapform2"></form>'); 
     $formHeader2=$('<p id="mapheader">December Tasks by Map</p>'); 
 
     $goBackField=$('<button id="gobackbutton" type="button">Go back to calendar view</button>'); 
     $formHeader2.append($goBackField);
-    $formDiv2.append($formHeader2);
+    $mapDiv1.append($formHeader2);
     $sliderContainer=$('<div id="slider-range"></div>');
     
     $sliderText3=$('<p id="textbar"></p>');
@@ -91,8 +91,8 @@ function createMapView(){  //I think this is a mixture of DOM and view stuff.
 
     $taskDiv=$('<div id="taskDiv"></div>');
     $mapForm2.append($taskDiv);
-    $formDiv2.append($mapForm2);
-    $('body').append($formDiv2);  
+    $mapDiv1.append($mapForm2);
+    $('body').append($mapDiv1);  
 }
 
 //*******************************************
@@ -272,10 +272,10 @@ function displayExistingTask(date,taskEntries){
 
 function checkForValidTaskEntry(text){
     if (text===""){
-          return ('Hey, enter something before you save - or press Cancel');   
+          return ('Hey, enter something before you submit - or press Cancel');   
         }
 }
-function storeTaskEntry(text,date){
+function storeTaskEntry(text,date,taskEntries){
     taskEntries[date]=text;
 }
 function clearTaskText(dateSelected){
@@ -360,15 +360,15 @@ $(function(){
         highlightDate(dateSelected);
         });      
 
-  //****SAVE/SUBMIT BUTTON
-    $('#savebutton').click(function(){
+  //****submit/submit BUTTON
+    $('#submitbutton').click(function(){
         event.preventDefault(); 
         event.stopPropagation();
         
         var textEntered=$('textarea').val(); 
         checkForValidTaskEntry(textEntered);
         console.log
-        storeTaskEntry(textEntered,dateSelected);
+        storeTaskEntry(textEntered,dateSelected,taskEntries);
         highlightDate(dateSelected);    
         changeFormToHidden('divTaskEntryForm');  
         clearTaskText(dateSelected); 
@@ -417,7 +417,7 @@ $(function(){
         event.preventDefault(); 
         event.stopPropagation();
         console.log("got here too!!!!");
-        $('#formDiv2').addClass("mapsurround2").removeClass("hidden");
+        $('#mapDiv1').addClass("mapsurround2").removeClass("hidden");
       
         $ (function() {
         
@@ -499,7 +499,7 @@ $(function(){
             event.preventDefault(); 
             event.stopPropagation();   
                                     
-            $('#formDiv2').addClass("hidden").removeClass("mapsurround2");
+            $('#mapDiv1').addClass("hidden").removeClass("mapsurround2");
             clearTasksInSliderView();                          
          
         });    
@@ -540,7 +540,7 @@ $(function(){
                             title: 'Your task is here!',
                           });    
                 
-                storeCoordsInLocationsArray(locationsArray, dateselected,latitudeReturnedFromLookup,longitudeReturnedFromLookup);
+                storeCoordsInLocationsArray(locationsArray, dateSelected,latitudeReturnedFromLookup,longitudeReturnedFromLookup);
                 
                
             };
