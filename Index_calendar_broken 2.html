@@ -24,86 +24,86 @@
    </script>
   <script>
 
-function createTaskEntryForm(){
+function createTaskEntryForm(parentElement){
     var $taskEntryDiv=$('<div id="divTaskEntryForm" class="hidden"></div>');  // 
     var $taskForm = $('<form id="taskForm"></form>'); 
     var $formHeader=$('<p id="headtext" class="headingtext"></p>');  //
     $taskForm.append($formHeader);
-    $textLabel=$('<p class="pcode2">Enter details of your task:</p>');
+    var $textLabel=$('<p class="pcode2">Enter details of your task:</p>');
     $taskForm.append($textLabel);
-    $textField=$('<textarea id="taskWords" name="textFieldname"></textarea>');
+    var $textField=$('<textarea id="taskWords" name="textFieldname"></textarea>');
     $textField.addClass("textbox");
     $taskForm.append($textField);
-    $mapDiv1=$('<div id="map class="mapStyle"></div>');
+    var $mapDiv1=$('<div id="map class="mapStyle"></div>');
     $taskForm.append($mapDiv1);
  
-    $findButton=$('<button id="findbutton" type="button">FIND</button>');
-    $postcodeLabel=$('<p class="pcode">Enter Postcode for task (if there is one):</p>');
-    $postcodeBox=('<input type="text" id="postcode"></input>');
+    var $findButton=$('<button id="findbutton" type="button">FIND</button>');
+    var $postcodeLabel=$('<p class="pcode">Enter Postcode for task (if there is one):</p>');
+    var $postcodeBox=('<input type="text" id="postcode"></input>');
     $taskForm.append($postcodeLabel).append($postcodeBox).append($findButton);
-    $submitField=$('<button id="submitbutton" type="button">SAVE</button>'); 
-    $cancelField=$('<button id="cancelbutton" type="button">CANCEL</button>'); 
+    var $submitField=$('<button id="submitbutton" type="button">SAVE</button>'); 
+    var $cancelField=$('<button id="cancelbutton" type="button">CANCEL</button>'); 
    
-    $taskForm.append($submitField).append($cancelField);;
-    $taskEntryDiv.append($taskForm);
-    $('body').append($taskEntryDiv);
+    var $taskForm.append($submitField).append($cancelField);;
+    var $taskEntryDiv.append($taskForm);
+    parentElement.append($taskEntryDiv);
   }
 
-function createTaskEditForm(){
-    $taskEditDiv=$('<div id="divTaskEditForm" class="hidden"></div>');
-    $secondTaskForm=$('<form id="secondformpage"></form>');
-    $secondFormHeader=$('<p id="headtext" class="headingtext"></p>');
-    $secondTextField=$('<p id="storedTextId" class="oldtext"></p>');
-    $closeField=$('<button id="closebutton">CLOSE</button>');   
-    $editField=$('<button id="editbutton">EDIT</button>');      
-    $removeField=$('<button id="removebutton">REMOVE</button>');  
-    $lineBr=$('<br></br>');  
+function createTaskEditForm(parentElement){
+    var $taskEditDiv=$('<div id="divTaskEditForm" class="hidden"></div>');
+    var $secondTaskForm=$('<form id="secondformpage"></form>');
+    var $secondFormHeader=$('<p id="headtext" class="headingtext"></p>');
+    var $secondTextField=$('<p id="storedTextId" class="oldtext"></p>');
+    var $closeField=$('<button id="closebutton">CLOSE</button>');   
+    var $editField=$('<button id="editbutton">EDIT</button>');      
+    var $removeField=$('<button id="removebutton">REMOVE</button>');  
+    var $lineBr=$('<br></br>');  
 
     $secondTaskForm.append($secondFormHeader).append($lineBr).append($lineBr).append($secondTextField).append($lineBr).append($closeField).append($editField).append($removeField);  
     $taskEditDiv.append($secondTaskForm); 
-    $('body').append($taskEditDiv); 
+    parentElement.append($taskEditDiv); 
 }
 
-function createmapView(){  //I think this is a mixture of DOM and view stuff.
-   $formDiv2=$('<div id="formDiv2" class="hidden"></div>');  // 
-    $mapForm2 = $('<form id="mapform2"></form>'); 
-    $formHeader2=$('<p id="mapheader">December Tasks by Map</p>'); 
+function createmapView(parentElement){  //I think this is a mixture of DOM and view stuff.
+    var $formDiv2=$('<div id="formDiv2" class="hidden"></div>');  // 
+    var $mapForm2 = $('<form id="mapform2"></form>'); 
+    var $formHeader2=$('<p id="mapheader">December Tasks by Map</p>'); 
 
-    $goBackField=$('<button id="gobackbutton" type="button">Go back to calendar view</button>'); 
+    var $goBackField=$('<button id="gobackbutton" type="button">Go back to calendar view</button>'); 
     $formHeader2.append($goBackField);
     $formDiv2.append($formHeader2);
-    $sliderContainer=$('<div id="slider-range"></div>');
+    var $sliderContainer=$('<div id="slider-range"></div>');
     
-    $sliderText3=$('<p id="textbar"></p>');
-    $sliderSlideInput=$('<input id="slidevalue" type="text" class="sliderStyle"></input>');
+    var $sliderText3=$('<p id="textbar"></p>');
+    var $sliderSlideInput=$('<input id="slidevalue" type="text" class="sliderStyle"></input>');
     $mapForm2.append($lineBr);
-    $sliderSlideLabel=$('<label for="amount">Show tasks between:</label>');
+    var $sliderSlideLabel=$('<label for="amount">Show tasks between:</label>');
     $sliderSlideInput.readonly=true;
     $sliderText3.append($sliderSlideLabel).append($sliderSlideInput);
     $sliderContainer.append($sliderText3);
     $mapForm2.append($lineBr);
     $mapForm2.append($lineBr);
     $mapForm2.append($sliderContainer);
-    $textLabel=$('<p class="pcode2">The tasks in range are:</p>');
-    $mapDiv2=$('<div id="mapView-mapdiv" class="mapStyle2"></div>');
+    var $textLabel=$('<p class="pcode2">The tasks in range are:</p>');
+    var $mapDiv2=$('<div id="mapView-mapdiv" class="mapStyle2"></div>');
     $mapForm2.append($mapDiv2);
 
-    $taskDiv=$('<div id="taskDiv"></div>');
+    var $taskDiv=$('<div id="taskDiv"></div>');
     $mapForm2.append($taskDiv);
     $formDiv2.append($mapForm2);
-    $('body').append($formDiv2);  
+    parentElement.append($formDiv2);  
 }
 
 //*******************************************
    
 
-function createPageHeader(currentMonth,currentYear){
-    $divTop= $('<div></div>');
-    $pageHeader =$('<p class="calendarMonth"></p>').text(currentMonth+' '+currentYear);
-    $mapViewButton=$('<button id="mapViewButton" type="button">View Tasks by Map</button>');
+function createPageHeader(currentMonth,currentYear,parentElement){
+    var $divTop= $('<div></div>');
+    var $pageHeader =$('<p class="calendarMonth"></p>').text(currentMonth+' '+currentYear);
+    var $mapViewButton=$('<button id="mapViewButton" type="button">View Tasks by Map</button>');
     $divTop.append($mapViewButton);
     $divTop.append($pageHeader);
-    $('body').append($divTop);
+    parentElement.append($divTop);
   }
 
 function initialiseTaskStorageArray(array,numDaysInMonth){  
@@ -312,6 +312,21 @@ function setCoordsForLocation(locationsArray,date,latitude,longitude){
     locationsArray[date]=[latitude,longitude];
 }
 
+function clickedOnDate(event){     //use or selector with set above
+        var dateSelected=event.target.textContent;
+        console.log("TaskEntries are",taskEntryArray);  ///?????
+        var formToChange = chooseAFormToDisplay(dateSelected,taskEntryArray);
+        var currentMonth = getCurrentMonthNumber();
+        var currentMonthName = getMonthName(currentMonth);
+        var currentYearNumber = getYearNumber(); 
+        changeformHeader(dateSelected,currentMonthName,currentYearNumber);
+
+        changeFormToVisible(formToChange);
+        var taskTextOnDate = getExistingTask(dateSelected);
+        displayTaskText(taskTextOnDate);
+        highlightDate(dateSelected);
+        });     
+
 // function addMarksToSlider(){
 //     var dateCount = 31;
 //     for (var i = 0; i <dateCount; i+4) {
@@ -329,7 +344,7 @@ $(function(){
     var currentMonthNumber = getCurrentMonthNumber();
     var currentMonthName = getMonthName(currentMonthNumber); 
     var currentYearNumber = getYearNumber(); 
-    createPageHeader(currentMonthName, currentYearNumber);
+    createPageHeader(currentMonthName, currentYearNumber,'body');
     createGridOfDatesView();
    // createInitialPageView(currentMonthName);
     setWeekdayLabelsToColumns();
@@ -344,46 +359,16 @@ $(function(){
     setArrayValuesToTablePosition(daysToUseWithBlanksAdded);   
     
     findTodaysDate();   
-    createTaskEntryForm();
-    createTaskEditForm();
-    createmapView();
+    createTaskEntryForm('body');
+    createTaskEditForm('body');
+    createmapView('body');
   //  addMarksToSlider();
 
-
-function clickedOnDate(event){     //use or selector with set above
-        var dateSelected=event.target.textContent;
-        console.log("TaskEntries are",taskEntryArray);  ///?????
-        var formToChange = chooseAFormToDisplay(dateSelected,taskEntryArray);
-        var currentMonth = getCurrentMonthNumber();
-        var currentMonthName = getMonthName(currentMonth);
-        var currentYearNumber = getYearNumber(); 
-        changeformHeader(dateSelected,currentMonthName,currentYearNumber);
-
-        changeFormToVisible(formToChange);
-        var taskTextOnDate = getExistingTask(dateSelected);
-        displayTaskText(taskTextOnDate);
-        highlightDate(dateSelected);
-        });      
      
-    $( ".todaysdate").click(function(){
-        dateSelected=event.target.textContent;
-        var formToChange = chooseAFormToDisplay(dateSelected,taskEntryArray);
-        changeformHeader(dateSelected,currentMonthName,currentYearNumber);
-        changeFormToVisible(formToChange);
-        displayExistingTask(dateSelected,taskEntries);
-        highlightDate(dateSelected);
-        });    
+    $( ".todaysdate").click(clickedOnDate(event);
+    $( ".active").click(clickedOnDate(event);
 
-  
-    $( ".active").click(function clickedOnDate(){     //use or selector with set above
-        dateSelected=event.target.textContent;
-        console.log("TaskEntries are",taskEntryArray);  ///?????
-        var formToChange = chooseAFormToDisplay(dateSelected,taskEntryArray);
-        changeformHeader(dateSelected,currentMonthName,currentYearNumber);
-        changeFormToVisible(formToChange);
-        displayExistingTask(dateSelected,taskEntries);
-        highlightDate(dateSelected);
-        });      
+   
 
   //****SAVE/SUBMIT BUTTON
     $('#submitbutton').click(function(){
